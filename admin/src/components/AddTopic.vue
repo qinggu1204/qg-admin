@@ -79,7 +79,7 @@
 
       <el-input v-model="subQuestion.subQuestionDesc"></el-input>
       <el-input v-model="subQuestion.subQuestionAns"></el-input>
-      <el-button @click.prevent="removeDomain(subQuestionInfo)">删除</el-button>
+      <el-button @click.prevent="removeDomain(subQuestion)">删除</el-button>
 
     </el-form-item>
     <el-form-item>

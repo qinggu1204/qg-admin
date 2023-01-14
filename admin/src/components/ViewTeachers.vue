@@ -122,7 +122,7 @@ export default {
   },
   mounted() {
     console.log('token token token',this.$store.state.token)
-    httptool.get("admin/getTeacherList",
+    httptool.get("/getTeacherList",
       {headers:{'token':this.$store.state.token},params:this.object}).then(res=>{
       console.log('!!',res);
       if(res.status===200){

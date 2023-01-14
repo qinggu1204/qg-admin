@@ -16,7 +16,7 @@
               <el-menu-item-group>
                 <el-menu-item index="/setaffairs">设置教务教师</el-menu-item>
                 <el-menu-item index="/modifyteacherid">修改教师工号</el-menu-item>
-
+                <el-menu-item index="/viewteachers">查看任课教师</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
             <el-submenu>

@@ -19,11 +19,9 @@ export default {
     }
   },
   mounted() {
-    this.$bus.$on('schoolInfo',(data)=>{
-      console.log('schoolId',data)
-      this.schoolId=data.schoolId
-      console.log('thisschoolid',this.schoolId)
-    })
+      this.schoolId=this.$store.state.schoolId
+      console.log('InfoschoolId',this.schoolId)
+
   }
 }
 </script>

@@ -23,6 +23,22 @@
       <el-input v-model="question.description"></el-input>
     </el-form-item>
     <el-form-item
+      v-if="question.type==='SINGLE'||question.type==='MULTI'||question.type==='JUDGE'"
+
+      v-for="(Option, index) in question.subOption"
+      :label="'选项' + index"
+      :key="Option.key"
+      :prop="'optionName.' + index + '.optionDesc'"
+    >
+      <el-input v-model="Option.optionName">选项名称</el-input>
+      <el-input v-model="Option.optionDesc">选项内容</el-input>
+      <el-button @click.prevent="removeOption(Option)">删除</el-button>
+    </el-form-item>
+    <el-form-item>
+      <el-button @click="addOption">新增选项</el-button>
+    </el-form-item>
+
+    <el-form-item
       prop="subjectId"
       label="学科"
     >
@@ -133,6 +149,10 @@ export default {
             subQuestionDesc: '',
             subQuestionAns:'',
           }],
+          subOption: [{
+            optionName: '',
+            optionDesc:'',
+          }],
         }
     }
   },
@@ -149,7 +169,8 @@ export default {
           console.log(error);
         })
       }
-    }
+    },
+
   },
   mounted() {
     httptool.get("admin/getSubjectList",
@@ -166,7 +187,7 @@ export default {
   },
   methods: {
     submitForm(formName) {
-          httptool.post("admin/addQuetion",this.question).then(res=>{
+          httptool.post("admin/addQuestion",this.question).then(res=>{
             console.log('submit',res);
             console.log('question',this.question)
             if(res.status===200){
@@ -190,13 +211,28 @@ export default {
         this.question.subQuestionInfo.splice(index, 1)
       }
     },
+    removeOption(item) {
+      var index = this.question.subOption.indexOf(item)
+      if (index !== -1) {
+        this.question.subOption.splice(index, 1)
+      }
+    },
     addDomain() {
       this.question.subQuestionInfo.push({
         subQuestionDesc: '',
         subQuestionAns:'',
         key: Date.now()
       });
-    }
+
+    },
+
+    addOption() {
+      this.question.subOption.push({
+        optionName: '',
+        optionDesc: '',
+        key: Date.now()
+      });
+    },
   }
 
 }

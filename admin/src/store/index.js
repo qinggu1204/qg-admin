@@ -8,6 +8,10 @@ const actions={
  },
   username (context,value){
     context.commit('Username',value)
+  },
+  schoolId(context,value){
+   console.log('vuex schoolId',value)
+    context.commit('SchoolId',value)
   }
 }
 //操作数据
@@ -18,12 +22,18 @@ const mutations={
   },
   Username(state,value){
     state.username=value
+  },
+  SchoolId(context,value){
+    console.log('m schoolId',value)
+
+    state.schoolId=value
   }
 }
 //存储数据
 const state={
-  username:404,
-  token:404
+  username:'empty',
+  token:'empty',
+  schoolId:'empty'
 }
 
 

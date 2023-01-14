@@ -7,7 +7,7 @@
       clearable
     >
     </el-input>
-    <el-table :data="tableData">
+    <el-table :data="tableData.records">
       <el-table-column prop="teacherId" label="教师编号" width="180"> </el-table-column>
       <el-table-column prop="teacherName" label="教师姓名" width="180"> </el-table-column>
       <el-table-column prop="loginName" label="教师电话" width="180"> </el-table-column>
@@ -24,6 +24,21 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-row>
+      <el-col style="text-align:right">
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="object.currentPage"
+          :page-sizes="[5, 10, 50, 100]"
+          :page-size="object.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="tableData.total">
+        </el-pagination>
+
+      </el-col>
+    </el-row>
+
   </div>
 </template>
 <script>
@@ -35,17 +50,72 @@ export default {
     return {
       inputVal: "",
       showTable: [],
-      tableData: [],
-      teacherTable: {
-        'currentPage':'1',
-        'pageSize':'1',
-        'schoolId':'1',
-        'loginName':'1',
-
+      tableData:{
+        records:[],
+        total:10,
+        size:10,
+        current:1,
+        orders:[],
+        optimizeCountSql:'',
+        searchCount:'',
+        pages:2,
       },
+      object:{
+        currentPage:'1',
+        pageSize:'10',
+        schoolId:'',
+        loginName:'',
+      }
     };
   },
   methods: {
+    handleSizeChange(size){
+      //修改当前每页的数据行数
+      this.object.pageSize=size;
+      //数据重新分页
+          this.object.schoolId=this.$store.state.schoolId
+
+      console.log('object',this.object)
+      httptool.get("admin/getTeacherList",
+        {headers:{'token':this.$store.state.token},params:this.object}).then(res=>{
+        console.log('!!',res);
+        if(res.status===200){
+          console.log(res.data.data.records);
+          this.tableData.records=res.data.data.records
+          this.tableData.total=res.data.data.total
+          this.tableData.size=res.data.data.size
+          this.tableData.current=res.data.data.current
+          this.tableData.pages=res.data.data.pages
+        }
+      }).catch(error=>{
+        console.log(error);
+      })
+    },
+    //调整当前的页码
+    handleCurrentChange(pageNumber){
+      //修改当前的页码
+      this.object.currentPage=pageNumber;
+      //数据重新分页
+          this.object.schoolId=this.$store.state.schoolId
+
+      console.log('object',this.object)
+
+      httptool.get("admin/getTeacherList",
+        {headers:{'token':this.$store.state.token},params:this.object}).then(res=>{
+        console.log('!!',res);
+        if(res.status===200){
+          console.log(res.data.data.records);
+          this.tableData.records=res.data.data.records
+          this.tableData.total=res.data.data.total
+          this.tableData.size=res.data.data.size
+          this.tableData.current=res.data.data.current
+          this.tableData.pages=res.data.data.pages
+        }
+      }).catch(error=>{
+        console.log(error);
+      })
+    },
+
     updataTeacherId(teacherId) {
       this.$prompt('请输入新工号', '教师'+teacherId, {
         confirmButtonText: '确定',
@@ -122,16 +192,19 @@ export default {
   },
   mounted() {
     console.log('token token token',this.$store.state.token)
-    httptool.get("/getTeacherList",
+    this.object.schoolId=this.$store.state.schoolId
+    this.object.loginName=this.$store.state.username
+    console.log('viewschoolid before get',this.object.schoolId)
+    httptool.get("/admin/getTeacherList",
       {headers:{'token':this.$store.state.token},params:this.object}).then(res=>{
       console.log('!!',res);
       if(res.status===200){
         console.log(res.data.data.records);
-        this.tableData=res.data.data.records
-        this.showTable=res.data.data.records
-        // console.log(res.data.data);
-        // this.tableData=res.data.data
-        // this.showTable=res.data.data
+        this.tableData.records=res.data.data.records
+        this.tableData.total=res.data.data.total
+        this.tableData.size=res.data.data.size
+        this.tableData.current=res.data.data.current
+        this.tableData.pages=res.data.data.pages
       }
     }).catch(error=>{
       console.log(error);

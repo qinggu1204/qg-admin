@@ -8,7 +8,7 @@
       clearable
     ></el-input>
     <el-table
-      :data="tableData"
+      :data="tableData.records"
       style="width: 100%">
       <el-table-column
         prop="studentId"
@@ -30,6 +30,21 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-row>
+      <el-col style="text-align:right">
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="object.currentPage"
+          :page-sizes="[5, 10, 50, 100]"
+          :page-size="object.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="tableData.pages">
+        >
+        </el-pagination>
+
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -41,21 +56,82 @@ export default {
   data(){
     return{
       inputVal:'',
-      tableData:[],
+      tableData:{
+        records:[],
+        total:10,
+        size:10,
+        current:1,
+        orders:[],
+        optimizeCountSql:'',
+        searchCount:'',
+        pages:2,
+      },
       showTable:[],
       studentData:{
         studentId:'',
         studentName:'',
       },
       object:{
-        currentPage:'',
-        pageSize:'',
+        currentPage:'1',
+        pageSize:'10',
         schoolId:'',
         loginName:'',
       }
     }
   },
   methods:{
+    handleSizeChange(size){
+      //修改当前每页的数据行数
+      this.object.pageSize=size;
+      //数据重新分页
+          this.object.schoolId=this.$store.state.schoolId
+
+      console.log('object',this.object)
+      httptool.get("admin/getStudentList",
+        {headers:{'token':this.$store.state.token},params:this.object}).then(res=>{
+        console.log('!!',res);
+        if(res.status===200){
+          console.log(res.data.data.records);
+          this.tableData.records=res.data.data.records
+          this.tableData.total=res.data.data.total
+          this.tableData.size=res.data.data.size
+          this.tableData.current=res.data.data.current
+          this.tableData.pages=res.data.data.pages
+        }
+      }).catch(error=>{
+        console.log(error);
+      })
+    },
+    //调整当前的页码
+    handleCurrentChange(pageNumber){
+      //修改当前的页码
+      this.object.currentPage=pageNumber;
+      //数据重新分页
+      this.object.schoolId=this.$store.state.schoolId
+
+        console.log('thisschoolid viewstudents',this.object.schoolId)
+
+      console.log('object',this.object)
+
+      httptool.get("admin/getStudentList",
+        {headers:{'token':this.$store.state.token},params:this.object}).then(res=>{
+        console.log('!!',res);
+        if(res.status===200){
+          console.log(res.data.data.records);
+          this.tableData.records=res.data.data.records
+          this.tableData.total=res.data.data.total
+          this.tableData.size=res.data.data.size
+          this.tableData.current=res.data.data.current
+          this.tableData.pages=res.data.data.pages
+        }
+      }).catch(error=>{
+        console.log(error);
+      })
+    },
+
+
+
+
     updataStudentId(studentId) {
       this.$prompt('请输入新学号', '学生'+studentId, {
         confirmButtonText: '确定',
@@ -116,17 +192,19 @@ export default {
   mounted() {
     this.object.loginName=this.$store.state.username
     console.log('loginName',this.object.loginName)
-    this.$bus.$on('schoolInfo',(data)=>{
-      this.object.schoolId=data.schoolId
-      console.log('thisschoolid',this.object.schoolId)
-    })
+    this.object.schoolId=this.$store.state.schoolId
+    console.log('thisschoolid viewstudent',this.object.schoolId)
+
     httptool.get("admin/getStudentList",
       {headers:{'token':this.$store.state.token},params:this.object}).then(res=>{
       console.log('!!',res);
       if(res.status===200){
         console.log(res.data.data.records);
-        this.tableData=res.data.data.records
-        this.showTable=res.data.data.records
+        this.tableData.records=res.data.data.records
+        this.tableData.total=res.data.data.total
+        this.tableData.size=res.data.data.size
+        this.tableData.current=res.data.data.current
+        this.tableData.pages=res.data.data.pages
         // console.log(res.data.data);
         // this.tableData=res.data.data
         // this.showTable=res.data.data

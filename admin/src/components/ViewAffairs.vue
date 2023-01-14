@@ -1,8 +1,15 @@
 <template>
   <div>
     <h2>affairs</h2>
+    <el-input
+      placeholder="请输入内容"
+      v-model="inputVal"
+      @keyup.enter.native="Search_table()"
+      clearable
+    >
+    </el-input>
     <el-table
-      :data="this.pageTicket"
+      :data="tableData.records"
       style="width: 100%">
       <el-table-column
         prop="teacherId"
@@ -25,11 +32,11 @@
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page="affairData.current"
+          :current-page="object.currentPage"
           :page-sizes="[5, 10, 50, 100]"
-          :page-size="affairData.size"
+          :page-size="object.pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="affairData.total">
+          :total="tableData.total">
         </el-pagination>
 
       </el-col>
@@ -45,11 +52,10 @@ export default {
   name: "ViewAffairs",
   data(){
     return{
+      inputVal: "",
+      showTable: [],
+
       tableData:{
-        teacherId:'',
-        teacherName:'',
-      },
-      affairData:{
         records:[],
         total:0,
         size:0,
@@ -61,8 +67,8 @@ export default {
       },
       pageTicket:[],
       object:{
-        currentPage:'',
-        pageSize:'',
+        currentPage:'1',
+        pageSize:'10',
         schoolId:'',
         loginName:'',
       }
@@ -71,23 +77,21 @@ export default {
   mounted() {
     this.object.loginName=this.$store.state.username
     console.log('loginName',this.object.loginName)
-    this.$bus.$on('schoolInfo',(data)=>{
-      this.schoolId=data.schoolId
-      console.log('thisschoolid',this.object.schoolId)
-    })
+    this.object.schoolId=this.$store.state.schoolId
+
+      console.log('thisschoolid viewaffairs',this.object.schoolId)
+
     //
     httptool.get("/admin/getNeteacherList",
       {headers:{'token':this.$store.state.token},params:this.object}).then(res=>{
       console.log('affairsListall',res);
       if(res.status===200){
         console.log('affairlist',res.data.data.records);
-        this.affairData.records=res.data.data.records
-        this.affairData.total=res.data.data.total
-        this.affairData.size=res.data.data.size
-        this.affairData.current=res.data.data.current
-        this.affairData.pages=res.data.data.pages
-        this.getPageInfo();
-        console.log('affairsData',this.affairData)
+        this.tableData.records=res.data.data.records
+        this.tableData.total=res.data.data.total
+        this.tableData.size=res.data.data.size
+        this.tableData.current=res.data.data.current
+        this.tableData.pages=res.data.data.pages
         this.$message({
           message:'加载成功',
           type:'success',
@@ -100,33 +104,89 @@ export default {
     })
   },
   methods:{
-    getPageInfo(){
-      //清空pageTicket中的数据
-      this.pageTicket=[];
-      // 获取当前页的数据
-      for(let i=(this.affairData.current-1)*this.affairData.size;i<this.affairData.total;i++){
-        //把遍历的数据添加到pageTicket里面
-        this.pageTicket.push(this.affairData.records[i]);
-        //判断是否达到一页的要求
-        if(this.pageTicket.length===this.affairData.size) break;
-      }
-    },
-    //分页时修改每页的行数,这里会自动传入一个size
     handleSizeChange(size){
       //修改当前每页的数据行数
-      this.affairData.size=size;
+      this.object.pageSize=size;
       //数据重新分页
-      this.getPageInfo();
+      this.object.schoolId=this.$store.state.schoolId
+
+      console.log('object',this.object)
+      httptool.get("admin/getTeacherList",
+        {headers:{'token':this.$store.state.token},params:this.object}).then(res=>{
+        console.log('!!',res);
+        if(res.status===200){
+          console.log(res.data.data.records);
+          this.tableData.records=res.data.data.records
+          this.tableData.total=res.data.data.total
+          this.tableData.size=res.data.data.size
+          this.tableData.current=res.data.data.current
+          this.tableData.pages=res.data.data.pages
+        }
+      }).catch(error=>{
+        console.log(error);
+      })
     },
     //调整当前的页码
     handleCurrentChange(pageNumber){
       //修改当前的页码
-      this.affairData.current=pageNumber;
+      this.object.currentPage=pageNumber;
       //数据重新分页
-      this.getPageInfo()
-    }
+      this.object.schoolId=this.$store.state.schoolId
 
-  }
+      console.log('object',this.object)
+
+      httptool.get("admin/getTeacherList",
+        {headers:{'token':this.$store.state.token},params:this.object}).then(res=>{
+        console.log('!!',res);
+        if(res.status===200){
+          console.log(res.data.data.records);
+          this.tableData.records=res.data.data.records
+          this.tableData.total=res.data.data.total
+          this.tableData.size=res.data.data.size
+          this.tableData.current=res.data.data.current
+          this.tableData.pages=res.data.data.pages
+        }
+      }).catch(error=>{
+        console.log(error);
+      })
+    },
+    Search_table() {
+      const Search_List = [];
+      let res1 = this.inputVal;
+      const res = res1.replace(/\s/gi, "");
+      let searchArr = this.showTable;
+      console.log('showTable',this.showTable)
+      searchArr.forEach((e) => {
+        let teacherId = e.teacherId;
+        let teacherName = e.teacherName;
+        let loginName = e.loginName;
+        if (teacherId.includes(res)) {
+          if (Search_List.indexOf(e) == "-1") {
+            Search_List.push(e);
+          }
+        }
+        if (teacherName.includes(res)) {
+          if (Search_List.indexOf(e) == "-1") {
+            Search_List.push(e);
+          }
+        }
+        if (loginName.includes(res)) {
+          if (Search_List.indexOf(e) == "-1") {
+            Search_List.push(e);
+          }
+        }
+      });
+      this.tableData = Search_List;
+    },
+
+  },
+  watch: {
+    inputVal(item1, item2) {
+      if (item1 == "") {
+        this.tableData = this.showTable;
+      }
+    },
+  },
 }
 </script>
 

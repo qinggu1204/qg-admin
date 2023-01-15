@@ -67,15 +67,14 @@ export default {
       },
       pageTicket:[],
       object:{
-        currentPage:'1',
-        pageSize:'10',
+        currentPage:1,
+        pageSize:10,
         schoolId:'',
         loginName:'',
       }
     }
   },
   mounted() {
-    this.object.loginName=this.$store.state.username
     console.log('loginName',this.object.loginName)
     this.object.schoolId=this.$store.state.schoolId
 

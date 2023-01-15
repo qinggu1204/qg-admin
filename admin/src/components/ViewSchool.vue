@@ -78,8 +78,8 @@ export default {
         pages:2,
       },
         object:{
-          pageSize:'',
-          currentPage:''
+          pageSize:10,
+          currentPage:1
         }
     }
   },

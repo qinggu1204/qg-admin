@@ -19,7 +19,7 @@
             @click="setaffair(scope.row.userId)">设置为教务教师</el-button>
           <el-button
             size="mini"
-            @click="updataTeacherId(scope.row.userId)">修改教师工号</el-button>
+            @click="updataTeacherId(scope.row.teacherId)">修改教师工号</el-button>
 
         </template>
       </el-table-column>
@@ -61,8 +61,8 @@ export default {
         pages:2,
       },
       object:{
-        currentPage:'1',
-        pageSize:'10',
+        currentPage:1,
+        pageSize:10,
         schoolId:'',
         loginName:'',
       }
@@ -117,6 +117,7 @@ export default {
     },
 
     updataTeacherId(teacherId) {
+      console.log('viewteacher teacherId',teacherId)
       this.$prompt('请输入新工号', '教师'+teacherId, {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -141,7 +142,7 @@ export default {
     },
     setaffair(userId) {
       console.log('userId', userId)
-      httptool.post("admin/addNeteacher", {'userId': userId}).then(res => {
+      httptool.post("admin/addNeteacher", {'userId': userId},{headers:{'token':this.$store.state.token}}).then(res => {
         console.log(res);
         if (res.status === 200) {
           this.$notify({
@@ -193,14 +194,14 @@ export default {
   mounted() {
     console.log('token token token',this.$store.state.token)
     this.object.schoolId=this.$store.state.schoolId
-    this.object.loginName=this.$store.state.username
-    console.log('viewschoolid before get',this.object.schoolId)
-    httptool.get("/admin/getTeacherList",
+    console.log('viewschoolid before get',this.object)
+    httptool.get("http://localhost:5000/test/",
       {headers:{'token':this.$store.state.token},params:this.object}).then(res=>{
       console.log('!!',res);
       if(res.status===200){
         console.log(res.data.data.records);
         this.tableData.records=res.data.data.records
+        this.showTable=res.data.data.records
         this.tableData.total=res.data.data.total
         this.tableData.size=res.data.data.size
         this.tableData.current=res.data.data.current

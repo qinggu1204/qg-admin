@@ -19,7 +19,7 @@
             @click="setaffair(scope.row.userId)">设置为教务教师</el-button>
           <el-button
             size="mini"
-            @click="updataTeacherId(scope.row.userId)">修改教师工号</el-button>
+            @click="updataTeacherId(scope.row.teacherId)">修改教师工号</el-button>
 
         </template>
       </el-table-column>
@@ -36,6 +36,10 @@ export default {
       inputVal: "",
       showTable: [],
       tableData: [],
+      teacherTable:{
+        teacherId:'',
+        newTeacherNumber:''
+      }
     };
   },
   methods: {
@@ -44,7 +48,7 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
       }).then(({ value }) => {
-        httptool.put("admin/updateTeacherNumber",this.teacherTable,{headers:{'token':this.$store.state.token}}).then(res=>{
+        httptool.put("admin/updateTeacherNumber",{'teacherId':teacherId},{headers:{'token':this.$store.state.token}}).then(res=>{
           console.log("@@@@@",res);
           if(res.status===200)
             this.$message({

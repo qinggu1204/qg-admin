@@ -195,7 +195,7 @@ export default {
     console.log('token token token',this.$store.state.token)
     this.object.schoolId=this.$store.state.schoolId
     console.log('viewschoolid before get',this.object)
-    httptool.get("http://localhost:5000/test/",
+    httptool.get("/admin/getTeacherList",
       {headers:{'token':this.$store.state.token},params:this.object}).then(res=>{
       console.log('!!',res);
       if(res.status===200){

@@ -204,7 +204,7 @@ export default {
   },
   methods: {
     sendCode(phoneNumber){
-      httptool.get("user/sendCode",{params:{'phoneNumber':this.registerForm.phoneNumber}}).then(res=>{
+      httptool.get("user/sendCode",{params:{'phoneNumber':phoneNumber}}).then(res=>{
         console.log('!!',res);
         if(res.status===200){
           console.log(res.data.data);

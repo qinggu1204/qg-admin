@@ -162,32 +162,36 @@ export default {
       let searchArr = this.showTable;
       console.log('showTable',this.showTable)
       searchArr.forEach((e) => {
-        let teacherId = e.teacherId;
-        let teacherName = e.teacherName;
-        let loginName = e.loginName;
+        let teacherId = e.teacherId.toString();
+        let teacherName = e.teacherName.toString();
+        let loginName = e.loginName.toString();
         if (teacherId.includes(res)) {
+          console.log('input',e)
           if (Search_List.indexOf(e) == "-1") {
             Search_List.push(e);
           }
         }
         if (teacherName.includes(res)) {
+          console.log('input',e)
+
           if (Search_List.indexOf(e) == "-1") {
             Search_List.push(e);
           }
         }
         if (loginName.includes(res)) {
+          console.log('input',e)
           if (Search_List.indexOf(e) == "-1") {
             Search_List.push(e);
           }
         }
       });
-      this.tableData = Search_List;
+      this.tableData.records = Search_List;
     },
   },
   watch: {
     inputVal(item1, item2) {
       if (item1 == "") {
-        this.tableData = this.showTable;
+        this.tableData.records = this.showTable;
       }
     },
   },
@@ -195,7 +199,7 @@ export default {
     console.log('token token token',this.$store.state.token)
     this.object.schoolId=this.$store.state.schoolId
     console.log('viewschoolid before get',this.object)
-    httptool.get("/admin/getTeacherList",
+    httptool.get("http://localhost:5000/test/",
       {headers:{'token':this.$store.state.token},params:this.object}).then(res=>{
       console.log('!!',res);
       if(res.status===200){

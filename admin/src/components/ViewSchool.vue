@@ -38,7 +38,7 @@
           <el-button
             size="mini"
             type="danger"
-            @click="gotoTeacher">查看学生列表</el-button>
+            @click="gotoTeacher">查看教师列表</el-button>
         </template>
       </el-table-column>
     </el-table>

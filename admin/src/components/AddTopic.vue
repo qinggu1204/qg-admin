@@ -99,8 +99,7 @@
 
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="addQuestion('question')">确认题目</el-button>
-
+      <el-button type="primary" @click="addQuestion('question')">暂存本题</el-button>
       <el-button type="primary" @click="submitForm('question')">提交</el-button>
       <el-button @click="addDomain">新增小题</el-button>
       <el-button @click="resetForm('question')">重置</el-button>
@@ -162,7 +161,7 @@ export default {
   watch:{
     'question.subjectId':{
       handler(){
-        httptool.get("admin/getChapterBySubject/1",
+        httptool.get("admin/getChapterBySubject",
           {headers:{'token':this.$store.state.token},params:{'subjectId':this.question.subjectId}}).then(res=>{
           console.log('chapterList',res);
           if(res.status===200){
@@ -191,7 +190,7 @@ export default {
   methods: {
     submitForm(formName) {
       console.log(this.questionList)
-          httptool.post("admin/addQuestion",this.questionList,{headers:{'token':this.$store.state.token}}).then(res=>{
+          httptool.post("admin/addQuestion", {'question':this.questionList},{headers:{'token':this.$store.state.token}}).then(res=>{
             console.log('submit',res);
             console.log('question',this.question)
             if(res.status===200){

@@ -25,7 +25,7 @@
     <el-form-item
       v-if="question.type==='SINGLE'||question.type==='MULTI'||question.type==='JUDGE'"
 
-      v-for="(Option, index) in question.subOption"
+      v-for="(Option, index) in question.optionInfo"
       :label="'选项' + index"
       :key="Option.key"
       :prop="'optionName.' + index + '.optionDesc'"
@@ -89,11 +89,11 @@
       v-for="(subQuestion, index) in question.subQuestionInfo"
       :label="'小题' + index"
       :key="subQuestion.key"
-      :prop="'subQuestionInfo.' + index + '.subQuestionDesc'"
+      :prop="'subQuestionDesc.' + index + '.subQuestionAns'"
 
     >
-      <el-input v-model="question.subQuestionInfo.subQuestionDesc"></el-input>
-      <el-input v-model="question.subQuestionInfo.subQuestionAns"></el-input>
+      <el-input v-model="subQuestion.subQuestionDesc"></el-input>
+      <el-input v-model="subQuestion.subQuestionAns"></el-input>
       <el-button @click.prevent="removeDomain(subQuestion)">删除</el-button>
 
     </el-form-item>
@@ -151,7 +151,7 @@ export default {
             subQuestionDesc: '',
             subQuestionAns:'',
           }],
-          subOption: [{
+          optionInfo: [{
             optionName: '',
             optionDesc:'',
           }],
@@ -230,9 +230,9 @@ export default {
       }
     },
     removeOption(item) {
-      var index = this.question.subOption.indexOf(item)
+      var index = this.question.optionInfo.indexOf(item)
       if (index !== -1) {
-        this.question.subOption.splice(index, 1)
+        this.question.optionInfo.splice(index, 1)
       }
     },
     addDomain() {
@@ -252,7 +252,7 @@ export default {
     },
 
     addOption() {
-      this.question.subOption.push({
+      this.question.optionInfo.push({
         optionName: '',
         optionDesc: '',
         key: Date.now()

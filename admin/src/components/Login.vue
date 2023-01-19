@@ -15,16 +15,16 @@
           round
           size="small"
           @click="toRegister(), play()"
-        >去注册</el-button
+        >账号密码登录</el-button
         >
       </div>
       <div class="right" v-show="right_show">
         <div>
-          <p>Welcome</p>
-          <p>仓储物流安全存储系统</p>
+          <p>Account password login</p>
+          <p>账号密码登录</p>
         </div>
         <el-button class="button" round size="small" @click="toLogin(), play()"
-        >去登录</el-button
+        >手机验证码登录</el-button
         >
       </div>
     </div>
@@ -35,10 +35,10 @@
     >
       <transition name="el-fade-in">
         <el-form
-          :model="registerForm"
+          :model="phoneForm"
           status-icon
           :rules="rules"
-          ref="registerForm"
+          ref="phoneForm"
           label-width="100px"
           class="demo-ruleForm"
 
@@ -48,7 +48,7 @@
               <el-input
                 ref="inputPhone"
                 type="text"
-                v-model="registerForm.phoneNumber"
+                v-model="phoneForm.phoneNumber"
                 autocomplete="off"
                 placeholder="请输入手机号"
                 style="margin: 20px;width: 180px"
@@ -57,7 +57,7 @@
               ></el-input>
               <el-button
                 type="primary"
-                @click="sendCode(registerForm.phoneNumber)"
+                @click="sendCode(phoneForm.phoneNumber)"
                 size="small"
                 round
               >获取验证码</el-button>
@@ -66,9 +66,9 @@
               <el-input
                 ref="password"
                 type="password"
-                v-model="registerForm.code"
+                v-model="phoneForm.code"
                 autocomplete="off"
-                placeholder="请输入密码"
+                placeholder="请输入验证码"
                 show-password
                 style="margin: 0px;width: 180px"
               ></el-input>
@@ -77,10 +77,10 @@
             <el-form-item>
               <el-button
                 type="primary"
-                @click="submitLogin()"
+                @click="submitRegister()"
                 size="small"
                 round
-              >登录</el-button>
+              >手机验证码登录</el-button>
 
             </el-form-item>
           </div>
@@ -90,7 +90,7 @@
               <el-input
                 ref="inputName"
                 type="tel"
-                v-model="registerForm.phoneNumber"
+                v-model="loginTable.loginName"
                 autocomplete="off"
                 placeholder="请输入手机号"
                 clearable
@@ -100,7 +100,7 @@
               <el-input
                 ref="password"
                 type="password"
-                v-model="registerForm.code"
+                v-model="loginTable.password"
                 autocomplete="off"
                 placeholder="请输入密码"
                 show-password
@@ -112,8 +112,8 @@
                 type="primary"
                 size="small"
                 round
-                @click="submitRegister()"
-              >注册</el-button
+                @click="submitLogin()"
+              >账号密码登录</el-button
               >
             </el-form-item>
           </div>
@@ -177,7 +177,11 @@ export default {
       movable: true,
       nowLeft: 49,
       phoneIsAble: false,
-      registerForm: {
+      loginTable:{
+        loginName:'',
+        password:'',
+      },
+      phoneForm: {
         phoneNumber: "",
         code: "",
 
@@ -200,7 +204,7 @@ export default {
   },
   methods: {
     sendCode(phoneNumber){
-      httptool.get("user/sendCode",{params:{'phoneNumber':this.registerForm.phoneNumber}}).then(res=>{
+      httptool.get("user/sendCode",{params:{'phoneNumber':phoneNumber}}).then(res=>{
         console.log('!!',res);
         if(res.status===200){
           console.log(res.data.data);
@@ -237,8 +241,8 @@ export default {
         }, 240);
         this.timer3 = setTimeout(() => {
           this.login_show = false;
-          this.registerForm.phoneNumber = "";
-          this.registerForm.code = "";
+          this.phoneForm.phoneNumber = "";
+          this.phoneForm.code = "";
           clearTimeout(this.timer3);
           this.timer3 = null;
         }, 350);
@@ -263,8 +267,8 @@ export default {
         }, 240);
         this.timer3 = setTimeout(() => {
           this.login_show = true;
-          this.registerForm.phoneNumber = "";
-          this.registerForm.code = "";
+          this.loginTable.loginName = "";
+          this.loginTable.password = "";
           clearTimeout(this.timer3);
           this.timer3 = null;
         }, 350);
@@ -295,12 +299,12 @@ export default {
 
 // 注册操作
     async submitRegister() {
-      console.log('phoneData',this.registerForm)
-      httptool.post("user/loginByCode", {'phoneNumber':this.registerForm.phoneNumber,'code':this.registerForm.code}).then(res=>{
+      console.log('phoneData',this.phoneForm)
+      httptool.post("user/loginByCode", this.phoneForm).then(res=>{
         console.log(res);
         if(res.data.code===200){
           console.log(res.data.data)
-          this.$store.dispatch('username',registerForm.phoneNumber)
+          this.$store.dispatch('username',this.phoneForm.phoneNumber)
           this.$store.dispatch('success',res.data.data)
           this.$router.push('/hello')
         }
@@ -310,13 +314,13 @@ export default {
     },
 // 登录操作
     async submitLogin() {
-      console.log('loginData',this.registerForm)
+      console.log('loginData',this.loginTable)
 
-      httptool.post("user/login", {'loginName':this.registerForm.phoneNumber,'password':this.registerForm.code}).then(res=>{
+      httptool.post("user/login", this.loginTable).then(res=>{
         console.log(res);
         if(res.data.code===200){
           console.log(res.data.data)
-          this.$store.dispatch('username',this.registerForm.phoneNumber)
+          this.$store.dispatch('username',this.loginTable.phoneNumber)
           this.$store.dispatch('success',res.data.data)
           this.$router.push('/hello')
         }

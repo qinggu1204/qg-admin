@@ -67,15 +67,14 @@ export default {
       },
       pageTicket:[],
       object:{
-        currentPage:'1',
-        pageSize:'10',
+        currentPage:1,
+        pageSize:10,
         schoolId:'',
         loginName:'',
       }
     }
   },
   mounted() {
-    this.object.loginName=this.$store.state.username
     console.log('loginName',this.object.loginName)
     this.object.schoolId=this.$store.state.schoolId
 
@@ -88,6 +87,7 @@ export default {
       if(res.status===200){
         console.log('affairlist',res.data.data.records);
         this.tableData.records=res.data.data.records
+        this.showTable=res.data.data.records
         this.tableData.total=res.data.data.total
         this.tableData.size=res.data.data.size
         this.tableData.current=res.data.data.current
@@ -117,6 +117,7 @@ export default {
         if(res.status===200){
           console.log(res.data.data.records);
           this.tableData.records=res.data.data.records
+          this.showTable=res.data.data.records
           this.tableData.total=res.data.data.total
           this.tableData.size=res.data.data.size
           this.tableData.current=res.data.data.current
@@ -141,6 +142,8 @@ export default {
         if(res.status===200){
           console.log(res.data.data.records);
           this.tableData.records=res.data.data.records
+          this.showTable=res.data.data.records
+
           this.tableData.total=res.data.data.total
           this.tableData.size=res.data.data.size
           this.tableData.current=res.data.data.current
@@ -157,9 +160,9 @@ export default {
       let searchArr = this.showTable;
       console.log('showTable',this.showTable)
       searchArr.forEach((e) => {
-        let teacherId = e.teacherId;
-        let teacherName = e.teacherName;
-        let loginName = e.loginName;
+        let teacherId = e.teacherId.toString();
+        let teacherName = e.teacherName.toString();
+        let loginName = e.loginName.toString();
         if (teacherId.includes(res)) {
           if (Search_List.indexOf(e) == "-1") {
             Search_List.push(e);
@@ -176,14 +179,14 @@ export default {
           }
         }
       });
-      this.tableData = Search_List;
+      this.tableData.records = Search_List;
     },
 
   },
   watch: {
     inputVal(item1, item2) {
       if (item1 == "") {
-        this.tableData = this.showTable;
+        this.tableData.records = Zhis.showTable;
       }
     },
   },

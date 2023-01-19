@@ -72,8 +72,8 @@ export default {
         studentName:'',
       },
       object:{
-        currentPage:'1',
-        pageSize:'10',
+        currentPage:1,
+        pageSize:10,
         schoolId:'',
         loginName:'',
       }
@@ -93,6 +93,8 @@ export default {
         if(res.status===200){
           console.log(res.data.data.records);
           this.tableData.records=res.data.data.records
+          this.showTable=res.data.data.records
+
           this.tableData.total=res.data.data.total
           this.tableData.size=res.data.data.size
           this.tableData.current=res.data.data.current
@@ -119,6 +121,8 @@ export default {
         if(res.status===200){
           console.log(res.data.data.records);
           this.tableData.records=res.data.data.records
+          this.showTable=res.data.data.records
+
           this.tableData.total=res.data.data.total
           this.tableData.size=res.data.data.size
           this.tableData.current=res.data.data.current
@@ -166,8 +170,8 @@ export default {
       let searchArr = this.showTable;
       console.log('showTable',this.showTable)
       searchArr.forEach((e) => {
-        let studentId = e.studentId;
-        let studentName = e.studentName;
+        let studentId = e.studentId.toString();
+        let studentName = e.studentName.toString();
         if (studentId.includes(res)) {
           if (Search_List.indexOf(e) == "-1") {
             Search_List.push(e);
@@ -179,18 +183,17 @@ export default {
           }
         }
       });
-      this.tableData = Search_List;
+      this.tableData.records = Search_List;
     },
   },
   watch: {
     inputVal(item1, item2) {
       if (item1 == "") {
-        this.tableData = this.showTable;
+        this.tableData.records = this.showTable;
       }
     },
   },
   mounted() {
-    this.object.loginName=this.$store.state.username
     console.log('loginName',this.object.loginName)
     this.object.schoolId=this.$store.state.schoolId
     console.log('thisschoolid viewstudent',this.object.schoolId)
@@ -201,6 +204,7 @@ export default {
       if(res.status===200){
         console.log(res.data.data.records);
         this.tableData.records=res.data.data.records
+        this.showTable=res.data.data.records
         this.tableData.total=res.data.data.total
         this.tableData.size=res.data.data.size
         this.tableData.current=res.data.data.current

@@ -25,7 +25,7 @@
     <el-form-item
       v-if="question.type==='SINGLE'||question.type==='MULTI'||question.type==='JUDGE'"
 
-      v-for="(Option, index) in question.subOption"
+      v-for="(Option, index) in question.optionInfo"
       :label="'选项' + index"
       :key="Option.key"
       :prop="'optionName.' + index + '.optionDesc'"
@@ -151,7 +151,7 @@ export default {
             subQuestionDesc: '',
             subQuestionAns:'',
           }],
-          subOption: [{
+          optionInfo: [{
             optionName: '',
             optionDesc:'',
           }],
@@ -230,16 +230,15 @@ export default {
       }
     },
     removeOption(item) {
-      var index = this.question.subOption.indexOf(item)
+      var index = this.question.optionInfo.indexOf(item)
       if (index !== -1) {
-        this.question.subOption.splice(index, 1)
+        this.question.optionInfo.splice(index, 1)
       }
     },
     addDomain() {
       this.question.subQuestionInfo.push({
         subQuestionDesc: '',
         subQuestionAns:'',
-        key: Date.now()
       });
 
     },
@@ -252,10 +251,9 @@ export default {
     },
 
     addOption() {
-      this.question.subOption.push({
+      this.question.optionInfo.push({
         optionName: '',
         optionDesc: '',
-        key: Date.now()
       });
     },
   }

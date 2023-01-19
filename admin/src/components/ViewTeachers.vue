@@ -13,14 +13,12 @@
       <el-table-column prop="loginName" label="教师电话" width="180"> </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-
           <el-button
             size="mini"
             @click="setaffair(scope.row.userId)">设置为教务教师</el-button>
           <el-button
             size="mini"
             @click="updataTeacherId(scope.row.userId)">修改教师工号</el-button>
-
         </template>
       </el-table-column>
     </el-table>

@@ -79,7 +79,7 @@ export default {
       },
         object:{
           pageSize:'',
-          currentPage:''
+          currentPage:'1'
         }
     }
   },

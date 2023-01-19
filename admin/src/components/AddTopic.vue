@@ -162,7 +162,7 @@ export default {
   watch:{
     'question.subjectId':{
       handler(){
-        httptool.get("admin/getChapterBySubject/1",
+        httptool.get("admin/getChapterBySubject",
           {headers:{'token':this.$store.state.token},params:{'subjectId':this.question.subjectId}}).then(res=>{
           console.log('chapterList',res);
           if(res.status===200){
@@ -191,7 +191,7 @@ export default {
   methods: {
     submitForm(formName) {
       console.log(this.questionList)
-          httptool.post("admin/addQuestion",this.questionList,{headers:{'token':this.$store.state.token}}).then(res=>{
+          httptool.post("admin/addQuestion", {'question':this.questionList},{headers:{'token':this.$store.state.token}}).then(res=>{
             console.log('submit',res);
             console.log('question',this.question)
             if(res.status===200){

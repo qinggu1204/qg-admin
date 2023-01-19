@@ -10,29 +10,10 @@
           <el-menu default-active="1-1" class="el-menu-vertical-demo" @select="handleOpen" @close="handleClose" :collapse="isCollapse">
             <el-submenu>
               <template slot="title">
-                <i class="el-icon-location"></i>
-                <span slot="title">教师信息管理</span>
-              </template>
-              <el-menu-item-group>
-                <el-menu-item index="/modifyteacherid">修改教师工号</el-menu-item>
-              </el-menu-item-group>
-            </el-submenu>
-            <el-submenu>
-              <template slot="title">
-                <i class="el-icon-menu"></i>
-                <span slot="title">学生信息管理</span>
-              </template>
-              <el-menu-item-group>
-                <el-menu-item index="/modifystudentid">修改学生学号</el-menu-item>
-              </el-menu-item-group>
-            </el-submenu>
-            <el-submenu>
-              <template slot="title">
                 <i class="el-icon-document"></i>
                 <span slot="title">学科信息管理</span>
               </template>
               <el-menu-item-group>
-                <el-menu-item index="/querysubject">查询学科章节</el-menu-item>
                 <el-menu-item index="/addtopic">添加题目信息</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
@@ -52,7 +33,7 @@
 
             </router-view>
           </el-main>
-          <el-footer>Footer</el-footer>
+          <el-footer></el-footer>
         </el-container>
       </el-container>
     </div>

@@ -141,6 +141,8 @@ export default {
         question:{
           type:'',
           description:'',
+          subjectName:'',
+          chapterName:'',
           subjectId:'',
           chapterId:'',
           difficultyLevel:0,
@@ -165,13 +167,27 @@ export default {
           console.log('chapterList',res);
           if(res.status===200){
             this.chapterList=res.data.data
+            for(var s=0; s<this.subjectType.length;s++)
+            {
+              if(this.subjectType[s].subjectId===this.question.subjectId){
+                this.question.subjectName=this.subjectType[s].subjectName
+              }
+            }
           }
         }).catch(error=>{
           console.log(error);
         })
       }
     },
-
+    'question.chapterId': {
+      handler() {
+        for (var c = 0; c < this.chapterList.length; c++) {
+          if (this.chapterList[c].chapterId === this.question.chapterId) {
+            this.question.chapterName = this.chapterList[c].chapterName
+          }
+        }
+      },
+    }
   },
   mounted() {
     httptool.get("admin/getSubjectList",

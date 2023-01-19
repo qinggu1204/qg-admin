@@ -92,9 +92,8 @@
       :prop="'subQuestionInfo.' + index + '.subQuestionDesc'"
 
     >
-
-      <el-input v-model="subQuestion.subQuestionDesc"></el-input>
-      <el-input v-model="subQuestion.subQuestionAns"></el-input>
+      <el-input v-model="question.subQuestionInfo.subQuestionDesc"></el-input>
+      <el-input v-model="question.subQuestionInfo.subQuestionAns"></el-input>
       <el-button @click.prevent="removeDomain(subQuestion)">删除</el-button>
 
     </el-form-item>
@@ -229,11 +228,11 @@ export default {
 
     },
     addQuestion(){
+      console.log('1question',this.question)
       var q=this.question
       console.log('qqqqq',q)
-
       this.questionList.push(q)
-      this.$refs['question'].resetFields();
+      // this.$refs['question'].resetFields();
     },
 
     addOption() {

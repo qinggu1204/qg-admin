@@ -161,8 +161,8 @@ export default {
   watch:{
     'question.subjectId':{
       handler(){
-        httptool.get("admin/getChapterBySubject",
-          {headers:{'token':this.$store.state.token},params:{'subjectId':this.question.subjectId}}).then(res=>{
+        httptool.get("admin/getChapterBySubject/"+this.question.subjectId,
+          {headers:{'token':this.$store.state.token}}).then(res=>{
           console.log('chapterList',res);
           if(res.status===200){
             this.chapterList=res.data.data
